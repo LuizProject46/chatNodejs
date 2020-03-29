@@ -31,6 +31,10 @@ io.on("connection",(socket)=>{
         delete clients[socket.id];
 
     })
+    socket.on("audio-record", (src)=>{
+        console.log(src)
+        socket.broadcast.emit("audio-record",src,clients[socket.id])
+    })
    
 }
     

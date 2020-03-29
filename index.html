@@ -9,11 +9,11 @@
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 </head>
 
-   
+
 <body style="background-image: linear-gradient(45deg, #0f7fa0, #1c6ca5);">
     <div class="container">
         <div class="row d-flex justify-content-center">
@@ -23,120 +23,214 @@
                         <div class="card-header">
                             <h3>Login</h3>
                         </div>
-                        <input id="name" type="text" placeholder="Nome" class="form-control"/>
-                    </br>
+                        <input id="name" type="text" placeholder="Nome" class="form-control" />
+                        </br>
                         <button id="btn_send" type="button" class="btn btn-primary">Entrar</button>
-                    
-                        
+
+
                     </div>
                 </div>
-                
+
             </div>
             <div id="chat" style="display:none;" class="col-md-12 col-sm-12 col-xs-12 ">
                 <div class="col-md-6">
                     <div class="card">
                         <ul class="list-group online">
-                           
+
                         </ul>
                     </div>
-    
+
                 </div>
-                <div style="margin-top: 10rem;"class="card">
+                <div style="margin-top: 10rem;" class="card">
                     <h3 class="text-center">Inicie uma conversa </h3>
-                    <div style="max-height: 200px;overflow: auto;"class="card-body ">
+                    <div style="max-height: 200px;overflow: auto;" class="card-body ">
                         <ul id="msgs" class="">
-                            
+
                         </ul>
-                        
+
                     </div>
                     <div class="card-footer">
-                        <input id="message" type="text" placeholder="Digite uma mensagem..."class="form-control"/> 
-                    </br>
-                    <button id="send" submit  class="btn btn-primary">Enviar</button>   
+                        <input id="message" type="text" placeholder="Digite uma mensagem..." class="form-control" />
+                        </br>
+                        <button id="send" submit class="btn btn-primary">Enviar <i
+                                class="fa fa-paper-plane"></i></button>
+                        <button id="btn_audio" submit value="record" class="btn  btn-outline-success"><i
+                                class="fa fa-microphone"></i></button>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <ul id="list" style="margin-top: 10rem;"class="list-group">
-                    
+                <ul id="list" style="margin-top: 10rem;" class="list-group">
+
                 </ul>
             </div>
-            
+
         </div>
     </div>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="assets/index.js"></script>
-<script
-  src="https://code.jquery.com/jquery-3.4.1.js"
-  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-  crossorigin="anonymous"></script>
-  
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+
 <script>
 
 
     const socket = io()
 
-    $("#btn_send").click(function(){
-        if($("#name").val() !=  ""){
+    $("#btn_send").click(function () {
+        if ($("#name").val() != "") {
 
             $("#chat").show()
             $("#login").hide(200)
-           
+
             socket.emit('join', $('#name').val());
         }
     })
-    
-    socket.on("update", function(msg,nome) {
-       
-            $('#msgs').append('<li style="list-style: none;max-width: 50%;"class=" alert alert-secondary ">'+msg+'</li>')
+
+    socket.on("update", function (msg, nome) {
+
+        $('#msgs').append('<li style="list-style: none;max-width: 50%;"class=" alert alert-secondary ">' + msg + '</li>')
+
+    });
+    socket.on("online", (name) => {
+        $(".online").append('<li id="' + name + '"class= "list-group-item">' + name + " " + '<i class="fa fa-circle text-success" aria-hidden="true"></i></li>')
+    })
+
+    socket.on("out", (name) => {
+        var offline = $("#" + name + "")
+
+
+        offline.hide()
+    })
+    socket.on("audio-record", (src, client) => {
+        var time = new Date()
+        const audio = document.createElement("audio")
+        audio.src = src
+
+        audio.controls = true
+
+
+
+
+        $('#msgs').append('<div  class="d-flex justify-content-start"><li id="audio-your"  style="display:none;list-style: none;margin-top: 1rem;"class=" alert alert-info "><b>' + client + '</b><div style="display: flex;max-width: 179px;" id="listen2"></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+            (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
+
+            var child =  $("#listen2").find("audio")
             
-        });
-    socket.on("online",(name)=>{
-            $(".online").append('<li id="'+name+'"class= "list-group-item">'+name+ " " +'<i class="fa fa-circle text-success" aria-hidden="true"></i></li>')
-    })
+                if(child != null){
+                    
+                    $("#listen2").append(audio)
+                    $("#audio-your").show()
+                }
 
-    socket.on("out",(name)=>{
-       var offline = $("#" +name +"")
-
-     
-      offline.hide()
-    })
-
-    socket.on('msg', function(name,msg){
-       
-        
-      
-           var time = new Date()
-        $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-top: 1rem;"class=" alert alert-info "><b>'+name+'</b><div>'+msg+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
-            (time.getMinutes()<10?'0':'') + time.getMinutes() +'<i style="margin:3px" class="fa fa-clock-o"></i></span></li>')
-       
-        
-       
         
     })
 
-    
+    socket.on('msg', function (name, msg) {
 
-    $("#send").click(function(key){
-        
-       
-           var time = new Date()
-            $('#msgs').append('<div class="d-flex justify-content-end"><li style="list-style: none;max-width: 50%;"class=" alert alert-success "><b>Você</b><div>'+$("#message").val()+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
-            (time.getMinutes()<10?'0':'') + time.getMinutes() +'<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
 
-            socket.emit("msg", $("#message").val())
-            $("#message").val("");
-            return false
-            
-        
+
+        var time = new Date()
+        $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-top: 1rem;"class=" alert alert-info "><b>' + name + '</b><div>' + msg + '</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+            (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li>')
+
+
+
+
+    })
+
+
+
+    $("#send").click(function (key) {
+
+
+        var time = new Date()
+        $('#msgs').append('<div class="d-flex justify-content-end"><li style="list-style: none;max-width: 50%;"class=" alert alert-success "><b>Você</b><div>' + $("#message").val() + '</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+            (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
+
+        socket.emit("msg", $("#message").val())
+        $("#message").val("");
+        return false
+
+
     });
 
-    $(function(){
-        socket.emit("list",$('#list'))
+    $(function () {
+        socket.emit("list", $('#list'))
     })
 
-    
+    $(function () {
+        let mediaRecorder
+        navigator.mediaDevices.getUserMedia({
+            audio: true
+        }).then(
+            stream => {
+                mediaRecorder = new MediaRecorder(stream)
+                let chunks = []
+                mediaRecorder.ondataavailable = data => {
+                    chunks.push(data.data)
+                }
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: "audio/ogg; code=opus" })
+                    const reader = new window.FileReader()
+                    reader.readAsDataURL(blob)
+                    reader.onloadend = () => {
+
+                        var audio = document.createElement("audio")
+                      
+                        var time = new Date()
+                        audio.src = reader.result
+
+                        audio.controls = true
+                        $('#msgs').append('<div  class="d-flex justify-content-end"><li id="audio-self" style="display:none;list-style: none;margin-top: 1rem;"class=" alert alert-success"><b>Você</b><div style="display: flex;max-width: 179px;" id="listen"></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+                            (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
+
+                        var filho =  $("#listen").find("audio")
+                        console.log(filho)
+                            if(filho != null){
+                               
+                                $("#listen").append(audio)
+                                $("#audio-self").show()
+                            }
+                        
+
+
+                        socket.emit("audio-record", reader.result)
+                    }
+                }
+
+
+            },
+            err => {
+                alert("para permitir o uso de gravação de audio, aceite as pemissões de microfone.")
+            })
+
+        $("#btn_audio").click(function () {
+            if ($(this).val() == "record") {
+                $(this).val("stop")
+                $(this).removeClass("btn-outline-success")
+                $(this).addClass("btn-outline-danger")
+                $("#btn_audio i").removeClass("fa fa-microphone")
+                $("#btn_audio i").addClass("fa fa-square")
+                mediaRecorder.start()
+
+
+            } else if ($(this).val() == "stop") {
+                $(this).val("record")
+                $(this).removeClass("btn-outline-danger")
+                $(this).addClass("btn-outline-success")
+                $("#btn_audio i").removeClass("fa fa-square")
+                $("#btn_audio i").addClass("fa fa-microphone")
+
+                mediaRecorder.stop()
+            }
+
+        })
+    })
+
+
 
 
 </script>
