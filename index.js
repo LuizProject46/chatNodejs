@@ -36,6 +36,6 @@ io.on("connection",(socket)=>{
     
 )
 
-http.listen(8000,()=>{
-    console.log("listening 8000")
+http.listen(3000,()=>{
+    console.log("listening 3000")
 })
