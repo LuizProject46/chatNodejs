@@ -50,7 +50,9 @@
                         
                     </div>
                     <div class="card-footer">
-                        <input id="send" type="text" placeholder="Digite uma mensagem..."class="form-control"/>    
+                        <input id="message" type="text" placeholder="Digite uma mensagem..."class="form-control"/> 
+                    </br>
+                    <button id="send" submit  class="btn btn-primary">Enviar</button>   
                     </div>
                 </div>
             </div>
@@ -116,17 +118,17 @@
 
     
 
-    $("input#send").keydown(function(key){
+    $("#send").click(function(key){
         
-        if(key.keyCode == 13){
+       
            var time = new Date()
-            $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-left: 414px;"class=" alert alert-success "><b>Você</b><div>'+$("input#send").val()+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
+            $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-left: 414px;"class=" alert alert-success "><b>Você</b><div>'+$("#message").val()+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
             (time.getMinutes()<10?'0':'') + time.getMinutes() +'<i style="margin:3px" class="fa fa-clock-o"></i></span></li>')
 
             socket.emit("msg", $(this).val())
             $(this).val("");
             return false
-        }
+        
     });
 
     $(function(){
