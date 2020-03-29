@@ -32,7 +32,7 @@
                 </div>
                 
             </div>
-            <div id="chat" style="display:none;" class="col-md-12 ">
+            <div id="chat" style="display:none;" class="col-md-12 col-sm-12 col-xs-12 ">
                 <div class="col-md-6">
                     <div class="card">
                         <ul class="list-group online">
@@ -105,10 +105,10 @@
 
     socket.on('msg', function(name,msg){
        
-        //$('#msgs').append('<li style="list-style: none;"class=" alert alert-info ">'+msg+'</li>')
-        console.log("nome :" +name)
+        
+      
            var time = new Date()
-        $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-top: 2rem;"class=" alert alert-info "><b>'+name+'</b><div>'+msg+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
+        $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-top: 1rem;"class=" alert alert-info "><b>'+name+'</b><div>'+msg+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
             (time.getMinutes()<10?'0':'') + time.getMinutes() +'<i style="margin:3px" class="fa fa-clock-o"></i></span></li>')
        
         
@@ -122,12 +122,13 @@
         
        
            var time = new Date()
-            $('#msgs').append('<li style="list-style: none;max-width: 50%;margin-left: 414px;"class=" alert alert-success "><b>Você</b><div>'+$("#message").val()+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
-            (time.getMinutes()<10?'0':'') + time.getMinutes() +'<i style="margin:3px" class="fa fa-clock-o"></i></span></li>')
+            $('#msgs').append('<div class="d-flex justify-content-end"><li style="list-style: none;max-width: 50%;"class=" alert alert-success "><b>Você</b><div>'+$("#message").val()+'</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' + 
+            (time.getMinutes()<10?'0':'') + time.getMinutes() +'<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
 
-            socket.emit("msg", $(this).val())
-            $(this).val("");
+            socket.emit("msg", $("#message").val())
+            $("#message").val("");
             return false
+            
         
     });
 
