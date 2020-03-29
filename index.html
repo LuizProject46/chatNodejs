@@ -161,79 +161,81 @@
     })
 
     $(function () {
-        let mediaRecorder
-        // Older browsers might not implement mediaDevices at all, so we set an empty object first
-if (navigator.mediaDevices === undefined) {
-  navigator.mediaDevices = {};
-}
+        if(navigator.mediaDevices){
+            // Older browsers might not implement mediaDevices at all, so we set an empty object first
+            if (navigator.mediaDevices === undefined) {
+            navigator.mediaDevices = {};
+            }
 
-// Some browsers partially implement mediaDevices. We can't just assign an object
-// with getUserMedia as it would overwrite existing properties.
-// Here, we will just add the getUserMedia property if it's missing.
-if (navigator.mediaDevices.getUserMedia === undefined) {
-  navigator.mediaDevices.getUserMedia = function(constraints) {
+            // Some browsers partially implement mediaDevices. We can't just assign an object
+            // with getUserMedia as it would overwrite existing properties.
+            // Here, we will just add the getUserMedia property if it's missing.
+            if (navigator.mediaDevices.getUserMedia === undefined) {
+            navigator.mediaDevices.getUserMedia = function(constraints) {
 
-    // First get ahold of the legacy getUserMedia, if present
-    var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                // First get ahold of the legacy getUserMedia, if present
+                var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-    // Some browsers just don't implement it - return a rejected promise with an error
-    // to keep a consistent interface
-    if (!getUserMedia) {
-      return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-    }
-
-    // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-    return new Promise(function(resolve, reject) {
-      getUserMedia.call(navigator, constraints, resolve, reject);
-    });
-  }
-}
-
-        navigator.mediaDevices.getUserMedia({
-            audio: true
-        }).then(
-            stream => {
-                mediaRecorder = new MediaRecorder(stream)
-                let chunks = []
-                mediaRecorder.ondataavailable = data => {
-                    chunks.push(data.data)
+                // Some browsers just don't implement it - return a rejected promise with an error
+                // to keep a consistent interface
+                if (!getUserMedia) {
+                return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
                 }
 
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: "audio/ogg; code=opus" })
-                    const reader = new window.FileReader()
-                    reader.readAsDataURL(blob)
-                    reader.onloadend = () => {
-
-                        var audio = document.createElement("audio")
-                      
-                        var time = new Date()
-                        audio.src = reader.result
-
-                        audio.controls = true
-                        $('#msgs').append('<div  class="d-flex justify-content-end"><li id="audio-self" style="display:none;list-style: none;margin-top: 1rem;"class=" alert alert-success"><b>Você</b><div style="display: flex;max-width: 179px;" id="listen"></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
-                            (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
-
-                        var filho =  $("#listen").find("audio")
-                        console.log(filho)
-                            if(filho != null){
-                               
-                                $("#listen").append(audio)
-                                $("#audio-self").show()
-                            }
-                        
-
-
-                        socket.emit("audio-record", reader.result)
+                // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
+                return new Promise(function(resolve, reject) {
+                getUserMedia.call(navigator, constraints, resolve, reject);
+                });
+            }
+            }
+            let mediaRecorder
+            navigator.mediaDevices.getUserMedia({
+                audio: true
+            }).then(
+                stream => {
+                    mediaRecorder = new MediaRecorder(stream)
+                    let chunks = []
+                    mediaRecorder.ondataavailable = data => {
+                        chunks.push(data.data)
                     }
-                }
+
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: "audio/ogg; code=opus" })
+                        const reader = new window.FileReader()
+                        reader.readAsDataURL(blob)
+                        reader.onloadend = () => {
+
+                            var audio = document.createElement("audio")
+                        
+                            var time = new Date()
+                            audio.src = reader.result
+
+                            audio.controls = true
+                            $('#msgs').append('<div  class="d-flex justify-content-end"><li id="audio-self" style="display:none;list-style: none;margin-top: 1rem;"class=" alert alert-success"><b>Você</b><div style="display: flex;max-width: 179px;" id="listen"></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+                                (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
+
+                            var filho =  $("#listen").find("audio")
+                            console.log(filho)
+                                if(filho != null){
+                                
+                                    $("#listen").append(audio)
+                                    $("#audio-self").show()
+                                }
+                            
 
 
-            },
-            err => {
-                alert("para permitir o uso de gravação de audio, aceite as pemissões de microfone.")
-            })
+                            socket.emit("audio-record", reader.result)
+                        }
+                    }
 
+
+                },
+                err => {
+                    alert("para permitir o uso de gravação de audio, aceite as pemissões de microfone.")
+                })
+        }else{
+            console.log("eroo")
+        }
         $("#btn_audio").click(function () {
             if ($(this).val() == "record") {
                 $(this).val("stop")
