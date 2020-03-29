@@ -162,13 +162,9 @@
 
     $(function () {
         
-        navigator.getMedia = ( navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
-           
+        
             let mediaRecorder
-            navigator.getMedia({
+            navigator.mediaDevices.getUserMedia({
                 audio: true
             }).then(
                 stream => {
@@ -211,6 +207,22 @@
                 },
                 err => {
                     alert("para permitir o uso de gravação de audio, aceite as pemissões de microfone.")
+                }).catch((err)=>{
+                     //log to console first 
+    console.log(err); /* handle the error */
+    if (err.name == "NotFoundError" || err.name == "DevicesNotFoundError") {
+        //required track is missing 
+    } else if (err.name == "NotReadableError" || err.name == "TrackStartError") {
+        //webcam or mic are already in use 
+    } else if (err.name == "OverconstrainedError" || err.name == "ConstraintNotSatisfiedError") {
+        //constraints can not be satisfied by avb. devices 
+    } else if (err.name == "NotAllowedError" || err.name == "PermissionDeniedError") {
+        //permission denied in browser 
+    } else if (err.name == "TypeError" || err.name == "TypeError") {
+        //empty constraints object 
+    } else {
+        //other errors 
+    }
                 })
         
         $("#btn_audio").click(function () {
