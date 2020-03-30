@@ -146,12 +146,15 @@
 
 
         var time = new Date()
-        $('#msgs').append('<div class="d-flex justify-content-end"><li style="list-style: none;max-width: 50%;"class=" alert alert-success "><b>Você</b><div>' + $("#message").val() + '</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+        if($("#message").val() != ""){
+            $('#msgs').append('<div class="d-flex justify-content-end"><li style="list-style: none;max-width: 50%;"class=" alert alert-success "><b>Você</b><div>' + $("#message").val() + '</div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
             (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
 
         socket.emit("msg", $("#message").val())
         $("#message").val("");
         return false
+        }
+      
 
 
     });
@@ -170,6 +173,7 @@
                 stream => {
                     mediaRecorder = new MediaRecorder(stream)
                     let chunks = []
+                    console.log(stream)
                     mediaRecorder.ondataavailable = data => {
                         chunks.push(data.data)
                     }
