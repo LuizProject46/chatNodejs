@@ -105,15 +105,9 @@
     })
     socket.on("audio-record", (src, client) => {
         var time = new Date()
-        const audio = document.createElement("audio")
-        audio.src = src
-
-        audio.controls = true
-
-
-
+    
               
-        $('#msgs').append('  <div  class="d-flex justify-content-start"><li id="audio-your"  style="list-style: none;margin-top: 1rem;"class=" alert alert-info "><b>'+client+'</b><div style="display: flex;max-width: 179px;" ><audio id="audio-player" controls="controls" src="'+src+'" type="audio/mpeg"/></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+        $('#msgs').append('  <div  class="d-flex justify-content-start"><li id="audio-your"  style="list-style: none;margin-top: 0.4rem;"class=" alert alert-info "><b>'+client+'</b><div style="display: flex;max-width: 179px;" ><audio id="audio-player" controls="controls" src="'+src+'" type="audio/mpeg"/></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
             (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
                             
 
@@ -182,7 +176,7 @@
                         
                             var time = new Date()
                             
-                             $('#msgs').append('  <div  class="d-flex justify-content-end"><li id="audio-your"  style="list-style: none;margin-top: 1rem;"class=" alert alert-success "><b>Você</b><div style="display: flex;max-width: 179px;" ><audio id="audio-player" controls="controls" src="'+reader.result+'" type="audio/mpeg"/></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
+                             $('#msgs').append('  <div  class="d-flex justify-content-end"><li id="audio-your"  style="list-style: none;margin-top: 0.4rem;"class=" alert alert-success "><b>Você</b><div style="display: flex;max-width: 179px;" ><audio id="audio-player" controls="controls" src="'+reader.result+'" type="audio/mpeg"/></div><span style="color:#000000ad"class="d-flex justify-content-end">' + time.getHours() + ':' +
             (time.getMinutes() < 10 ? '0' : '') + time.getMinutes() + '<i style="margin:3px" class="fa fa-clock-o"></i></span></li></div>')
                             
                               
